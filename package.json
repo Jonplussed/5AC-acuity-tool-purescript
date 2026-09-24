@@ -1,0 +1,10 @@
+{
+  "name": "y",
+  "version": "0.0.1",
+  "description": "5AC acuity tool in Purescript",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  }
+}
