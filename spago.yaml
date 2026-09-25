@@ -1,6 +1,7 @@
 package:
   name: acuity-tool-purescript
   dependencies:
+    - arrays
     - console
     - effect
     - prelude
