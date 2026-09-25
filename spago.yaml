@@ -7,7 +7,8 @@ package:
     - prelude
   test:
     main: Test.Main
-    dependencies: []
+    dependencies:
+      - spec
 workspace:
   packageSet:
     registry: 81.1.0
