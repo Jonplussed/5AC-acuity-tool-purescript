@@ -37,4 +37,4 @@ type Patient =
   }
 
 acuityPrio :: Patient -> Patient -> Ordering
-acuityPrio p1 p2 = flip compare p1.acuity p2.acuity
+acuityPrio p1 p2 = compare p2.acuity p1.acuity

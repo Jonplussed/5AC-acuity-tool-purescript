@@ -1,5 +1,5 @@
 module AcuityTool.Assignment
-  ( PatientCount(..)
+  ( PlacementCount(..)
   , Assignment
   , empty
   , assign
@@ -14,39 +14,47 @@ import Data.Maybe (maybe)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
-import Data.Array as Arr
-import AcuityTool.Patient as P
 import AcuityTool.Bed as B
+import AcuityTool.Patient as Pa
+import AcuityTool.Placement as Pl
+import Data.Array as Arr
 
-newtype PatientCount = PatientCount Int
+newtype PlacementCount = PlacementCount Int
 
-derive newtype instance eqPatientCount :: Eq PatientCount
-derive newtype instance ordPatientCount :: Ord PatientCount
-derive newtype instance semiringPatientCount :: Semiring PatientCount
-derive newtype instance showPatientCount :: Show PatientCount
+derive newtype instance eqPlacementCount :: Eq PlacementCount
+derive newtype instance ordPlacementCount :: Ord PlacementCount
+derive newtype instance semiringPlacementCount :: Semiring PlacementCount
+derive newtype instance showPlacementCount :: Show PlacementCount
 
 type Assignment =
-  { beds    :: Array B.Bed
-  , status  :: P.Status
-  , acuity  :: P.Acuity
+  { placements  :: Array Pl.Placement
+  , beds        :: Array B.Bed
+  , status      :: Pa.Status
+  , acuity      :: Pa.Acuity
   }
 
 empty :: Assignment
-empty = { beds: [] , status: P.MS, acuity: P.Acuity 0 }
-
-assign :: Assignment -> B.Bed -> Assignment
-assign a b =
-  { beds:   Arr.snoc a.beds b
-  , status: maxStatus a b
-  , acuity: totalAcuity a b
+empty =
+  { placements: []
+  , beds:       []
+  , status:     Pa.MS
+  , acuity:     Pa.Acuity 0
   }
 
-maxStatus :: Assignment -> B.Bed -> P.Status
-maxStatus a b = maybe a.status (max a.status <<< _.status) b.patient
+assign :: Assignment -> Pl.Placement -> Assignment
+assign a p =
+  { placements: Arr.snoc a.placements p
+  , beds:       Arr.snoc a.beds p.bed
+  , status:     maxStatus a p
+  , acuity:     totalAcuity a p
+  }
 
-totalAcuity :: Assignment -> B.Bed -> P.Acuity
-totalAcuity a b = maybe a.acuity (add a.acuity <<< _.acuity) b.patient
+maxStatus :: Assignment -> Pl.Placement -> Pa.Status
+maxStatus a p = maybe a.status (max a.status <<< _.status) p.patient
 
-patientCount :: Assignment -> B.Bed -> PatientCount
-patientCount a b = PatientCount $ maybe l (\_ -> l + 1) b.patient
-  where l = Arr.length a.beds
+totalAcuity :: Assignment -> Pl.Placement -> Pa.Acuity
+totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
+
+patientCount :: Assignment -> Pl.Placement -> PlacementCount
+patientCount a p = PlacementCount $ maybe l (\_ -> l + 1) p.patient
+  where l = Arr.length a.placements

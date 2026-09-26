@@ -2,9 +2,7 @@ module AcuityTool.Bed where
 
 import Prelude
 
-import Data.Array (sortBy)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 
 import AcuityTool.Patient as P
@@ -21,23 +19,18 @@ derive newtype instance eqBedNumber :: Eq BedNumber
 derive newtype instance ordBedNumber :: Ord BedNumber
 derive newtype instance showBedNumber :: Show BedNumber
 
-type Bed =
-  { roomNumber  :: RoomNumber
-  , bedNumber   :: BedNumber
-  , patient     :: Maybe P.Patient
-  }
+data Bed = Bed RoomNumber BedNumber
 
-patientPrio :: Maybe P.Patient -> Maybe P.Patient -> Ordering
-patientPrio (Just p1) (Just p2) = P.acuityPrio p1 p2
-patientPrio Nothing   (Just _)  = LT
-patientPrio Nothing   _         = EQ
-patientPrio _         _         = GT
+derive instance genericBed :: Generic Bed _
 
-sortByPrio :: Array Bed -> Array Bed
-sortByPrio = sortBy $ \b1 b2 -> patientPrio b1.patient b2.patient
+instance eqBed :: Eq Bed where
+  eq (Bed r1 b1) (Bed r2 b2) = r1 == r2 && b1 == b2
+
+instance ordBed :: Ord Bed where
+  compare (Bed r1 b1) (Bed r2 b2) = compare r1 r2 <> compare b1 b2
+
+instance showBed :: Show Bed where
+  show = genericShow
 
 isSameRoom :: Bed -> Bed -> Boolean
-isSameRoom b1 b2 = b1.roomNumber == b2.roomNumber
-
-isSameBed :: Bed -> Bed -> Boolean
-isSameBed b1 b2 = isSameRoom b1 b2 && b1.bedNumber == b2.bedNumber
+isSameRoom (Bed r1 _) (Bed r2 _) = r1 == r2

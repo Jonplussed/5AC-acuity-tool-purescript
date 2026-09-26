@@ -5,28 +5,29 @@ import Prelude
 import Data.Maybe (isNothing)
 import Data.Ord (lessThanOrEq)
 
-import Data.Array as Arr
-import AcuityTool.Patient as P
 import AcuityTool.Bed as B
+import AcuityTool.Patient as Pa
+import AcuityTool.Placement as Pl
 import AcuityTool.Assignment as A
+import Data.Array as Arr
 
-type AConstraint = A.Assignment -> B.Bed -> Boolean
+type AConstraint = A.Assignment -> Pl.Placement -> Boolean
 
-maxPatientsForIMC :: A.PatientCount -> AConstraint
-maxPatientsForIMC n a b = case A.maxStatus a b of
-  P.IMC -> A.patientCount a b <= n
+maxPatientsForIMC :: A.PlacementCount -> AConstraint
+maxPatientsForIMC n a p = case A.maxStatus a p of
+  Pa.IMC -> A.patientCount a p <= n
   _     -> true
 
-maxPatientsForMS :: A.PatientCount -> AConstraint
-maxPatientsForMS n a b = case A.maxStatus a b of
-  P.MS  -> A.patientCount a b <= n
+maxPatientsForMS :: A.PlacementCount -> AConstraint
+maxPatientsForMS n a p = case A.maxStatus a p of
+  Pa.MS  -> A.patientCount a p <= n
   _     -> true
 
-maxAcuity :: P.Acuity -> AConstraint
+maxAcuity :: Pa.Acuity -> AConstraint
 maxAcuity n a = lessThanOrEq n <<< A.totalAcuity a
 
 distinctRooms :: AConstraint
-distinctRooms a b = isNothing $ Arr.findIndex (B.isSameRoom b) a.beds
+distinctRooms a p = isNothing $ Arr.findIndex (B.isSameRoom p.bed) a.beds
 
 -- exclusiveRooms :: AConstraint
 -- exclusiveRooms a b = 
