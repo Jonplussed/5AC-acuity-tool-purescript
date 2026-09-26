@@ -10,11 +10,6 @@ data Status = MS | IMC
 derive instance eqStatus :: Eq Status
 derive instance genericStatus :: Generic Status _
 
-instance ordStatus :: Ord Status where
-  compare IMC  MS   = GT
-  compare MS   IMC  = LT
-  compare _    _    = EQ
-
 instance showStatus :: Show Status where
   show = genericShow
 
@@ -29,5 +24,5 @@ type Patient =
   , acuity :: Acuity
   }
 
-compareAcuityDesc :: Patient -> Patient -> Ordering
-compareAcuityDesc p1 p2 = flip compare p1.acuity p2.acuity
+acuityPrio :: Patient -> Patient -> Ordering
+acuityPrio p1 p2 = flip compare p1.acuity p2.acuity
