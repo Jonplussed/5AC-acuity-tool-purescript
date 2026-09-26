@@ -27,24 +27,24 @@ derive newtype instance semiringPlacementCount :: Semiring PlacementCount
 derive newtype instance showPlacementCount :: Show PlacementCount
 
 type Assignment =
-  { placements  :: Array Pl.Placement
-  , beds        :: Array B.Bed
+  -- { placements  :: Array Pl.Placement
+  { beds        :: Array B.Bed
   , status      :: Pa.Status
   , acuity      :: Pa.Acuity
   }
 
 empty :: Assignment
 empty =
-  { placements: []
-  , beds:       []
+  -- { placements: []
+  { beds:       []
   , status:     Pa.MS
   , acuity:     Pa.Acuity 0
   }
 
 assign :: Assignment -> Pl.Placement -> Assignment
 assign a p =
-  { placements: Arr.snoc a.placements p
-  , beds:       Arr.snoc a.beds p.bed
+  -- { placements: Arr.snoc a.placements p
+  { beds:       Arr.snoc a.beds p.bed
   , status:     maxStatus a p
   , acuity:     totalAcuity a p
   }
@@ -57,4 +57,4 @@ totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
 
 patientCount :: Assignment -> Pl.Placement -> PlacementCount
 patientCount a p = PlacementCount $ maybe l (\_ -> l + 1) p.patient
-  where l = Arr.length a.placements
+  where l = Arr.length a.beds
