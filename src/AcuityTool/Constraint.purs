@@ -24,14 +24,16 @@ defaults =
   ]
 
 maxPatientsForIMC :: A.PlacementCount -> Constraint
-maxPatientsForIMC n a p = case A.maxStatus a p of
-  Pa.IMC -> A.patientCount a p <= n
-  _     -> true
+maxPatientsForIMC (A.PlacementCount n) a p =
+  case A.maxStatus a p of
+    Pa.IMC  -> Arr.length a.beds < n
+    _       -> true
 
 maxPatientsForMS :: A.PlacementCount -> Constraint
-maxPatientsForMS n a p = case A.maxStatus a p of
-  Pa.MS  -> A.patientCount a p <= n
-  _     -> true
+maxPatientsForMS (A.PlacementCount n) a p =
+  case A.maxStatus a p of
+    Pa.MS   -> Arr.length a.beds < n
+    _       -> true
 
 maxAcuity :: Pa.Acuity -> Constraint
 maxAcuity n a = lessThanOrEq n <<< A.totalAcuity a

@@ -5,7 +5,7 @@ module AcuityTool.Assignment
   , assign
   , maxStatus
   , totalAcuity
-  , patientCount
+  , comparePrio
   ) where
 
 import Prelude
@@ -28,25 +28,25 @@ derive newtype instance showPlacementCount :: Show PlacementCount
 
 type Assignment =
   -- { placements  :: Array Pl.Placement
-  { beds        :: Array B.Bed
-  , status      :: Pa.Status
-  , acuity      :: Pa.Acuity
+  { beds    :: Array B.Bed
+  , status  :: Pa.Status
+  , acuity  :: Pa.Acuity
   }
 
 empty :: Assignment
 empty =
   -- { placements: []
-  { beds:       []
-  , status:     Pa.MS
-  , acuity:     Pa.Acuity 0
+  { beds:   []
+  , status: Pa.MS
+  , acuity: Pa.Acuity 0
   }
 
 assign :: Assignment -> Pl.Placement -> Assignment
 assign a p =
   -- { placements: Arr.snoc a.placements p
-  { beds:       Arr.snoc a.beds p.bed
-  , status:     maxStatus a p
-  , acuity:     totalAcuity a p
+  { beds:   Arr.snoc a.beds p.bed
+  , status: maxStatus a p
+  , acuity: totalAcuity a p
   }
 
 maxStatus :: Assignment -> Pl.Placement -> Pa.Status
@@ -55,6 +55,8 @@ maxStatus a p = maybe a.status (max a.status <<< _.status) p.patient
 totalAcuity :: Assignment -> Pl.Placement -> Pa.Acuity
 totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
 
-patientCount :: Assignment -> Pl.Placement -> PlacementCount
-patientCount a p = PlacementCount $ maybe l (\_ -> l + 1) p.patient
-  where l = Arr.length a.beds
+comparePrio :: Assignment -> Assignment -> Ordering
+comparePrio a1 a2 =
+  compare a1.acuity a2.acuity <>
+  compare (Arr.length a1.beds) (Arr.length a2.beds) <>
+  compare a1.status a2.status
