@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Array (sortBy)
 import Data.Maybe (Maybe(..))
-import Test.Spec (Spec, pending, describe, it)
+import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 
 import AcuityTool.Bed as B
@@ -41,4 +41,4 @@ placementSpec = describe "Placement" do
           p2 = place $ Just { status: Pa.IMC,  acuity: Pa.Acuity 2 }
           p3 = place $ Just { status: Pa.MS,   acuity: Pa.Acuity 3 }
 
-      Pl.sortByPrio[p2,p1,p3] `shouldEqual` [p3,p2,p1]
+      Pl.sortByPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]
