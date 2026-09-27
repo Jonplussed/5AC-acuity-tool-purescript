@@ -13,24 +13,31 @@ import AcuityTool.Placement as Pl
 import AcuityTool.Assignment as A
 import Data.Array as Arr
 
+newtype BedCount = BedCount Int
+
+derive newtype instance eqBedCount :: Eq BedCount
+derive newtype instance ordBedCount :: Ord BedCount
+derive newtype instance semiringBedCount :: Semiring BedCount
+derive newtype instance showBedCount :: Show BedCount
+
 type Constraint = A.Assignment -> Pl.Placement -> Boolean
 
 defaults :: Array Constraint
 defaults =
-  [ maxPatientsForIMC (A.PlacementCount 3)
-  , maxPatientsForMS (A.PlacementCount 4)
+  [ maxPatientsForIMC (BedCount 3)
+  , maxPatientsForMS (BedCount 4)
   , maxAcuity (Pa.Acuity 10)
   , distinctRooms
   ]
 
-maxPatientsForIMC :: A.PlacementCount -> Constraint
-maxPatientsForIMC (A.PlacementCount n) a p =
+maxPatientsForIMC :: BedCount -> Constraint
+maxPatientsForIMC (BedCount n) a p =
   case A.maxStatus a p of
     Pa.IMC  -> Arr.length a.beds < n
     _       -> true
 
-maxPatientsForMS :: A.PlacementCount -> Constraint
-maxPatientsForMS (A.PlacementCount n) a p =
+maxPatientsForMS :: BedCount -> Constraint
+maxPatientsForMS (BedCount n) a p =
   case A.maxStatus a p of
     Pa.MS   -> Arr.length a.beds < n
     _       -> true

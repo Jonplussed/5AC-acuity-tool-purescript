@@ -8,6 +8,8 @@ import Test.Spec.Assertions (shouldEqual)
 
 import AcuityTool.Patient as P
 
+import Test.AcuityTool.SpecHelpers (patient)
+
 patientSpec :: Spec Unit
 patientSpec = describe "AcuityTool.Patient" do
   describe "Status" do
@@ -17,9 +19,9 @@ patientSpec = describe "AcuityTool.Patient" do
 
   describe "Patient" do
     describe "acuityPrio" do
-      let p1 = { status: P.MS,   acuity: P.Acuity 1 }
-          p2 = { status: P.IMC,  acuity: P.Acuity 2 }
-          p3 = { status: P.MS,   acuity: P.Acuity 3 }
+      let p1 = patient P.MS  1
+          p2 = patient P.IMC 2
+          p3 = patient P.MS  3
 
       it "will sort an array of patients by descending acuity" do
         sortBy P.acuityPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]

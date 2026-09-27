@@ -1,6 +1,5 @@
 module AcuityTool.Assignment
-  ( PlacementCount(..)
-  , Assignment
+  ( Assignment
   , empty
   , assign
   , maxStatus
@@ -19,15 +18,7 @@ import AcuityTool.Patient as Pa
 import AcuityTool.Placement as Pl
 import Data.Array as Arr
 
-newtype PlacementCount = PlacementCount Int
-
-derive newtype instance eqPlacementCount :: Eq PlacementCount
-derive newtype instance ordPlacementCount :: Ord PlacementCount
-derive newtype instance semiringPlacementCount :: Semiring PlacementCount
-derive newtype instance showPlacementCount :: Show PlacementCount
-
 type Assignment =
-  -- { placements  :: Array Pl.Placement
   { beds    :: Array B.Bed
   , status  :: Pa.Status
   , acuity  :: Pa.Acuity
@@ -35,7 +26,6 @@ type Assignment =
 
 empty :: Assignment
 empty =
-  -- { placements: []
   { beds:   []
   , status: Pa.MS
   , acuity: Pa.Acuity 0
@@ -43,7 +33,6 @@ empty =
 
 assign :: Assignment -> Pl.Placement -> Assignment
 assign a p =
-  -- { placements: Arr.snoc a.placements p
   { beds:   Arr.snoc a.beds p.bed
   , status: maxStatus a p
   , acuity: totalAcuity a p

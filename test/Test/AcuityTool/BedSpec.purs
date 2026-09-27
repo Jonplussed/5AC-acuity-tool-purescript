@@ -8,9 +8,10 @@ import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 
 import AcuityTool.Bed as B
 
+import Test.AcuityTool.SpecHelpers (bed)
+
 bedSpec :: Spec Unit
 bedSpec = describe "Bed" do
-  let bed r b = B.Bed (B.RoomNumber r) (B.BedNumber b)
 
   describe "instance Eq Bed" do
     it "is equal if the room # and bed # are equal" do
