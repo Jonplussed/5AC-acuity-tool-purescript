@@ -4,7 +4,7 @@ module AcuityTool.Assignment
   , assign
   , maxStatus
   , totalAcuity
-  , comparePrio
+  , priority
   ) where
 
 import Prelude
@@ -44,8 +44,8 @@ maxStatus a p = maybe a.status (max a.status <<< _.status) p.patient
 totalAcuity :: Assignment -> Pl.Placement -> Pa.Acuity
 totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
 
-comparePrio :: Assignment -> Assignment -> Ordering
-comparePrio a1 a2 =
+priority :: Assignment -> Assignment -> Ordering
+priority a1 a2 =
   compare a1.acuity a2.acuity <>
-  compare (Arr.length a1.beds) (Arr.length a2.beds) <>
-  compare a1.status a2.status
+  compare a1.status a2.status <>
+  compare (Arr.length a1.beds) (Arr.length a2.beds)
