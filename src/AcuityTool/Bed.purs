@@ -3,6 +3,7 @@ module AcuityTool.Bed where
 import Prelude
 
 import Data.Generic.Rep (class Generic)
+import Data.Int (decimal, toStringAs)
 import Data.Show.Generic (genericShow)
 
 import AcuityTool.Patient as P
@@ -22,3 +23,6 @@ instance showBed :: Show Bed where
 
 isSameRoom :: Bed -> Bed -> Boolean
 isSameRoom (Bed r1 _) (Bed r2 _) = r1 == r2
+
+label :: Bed -> String
+label (Bed r b) = toStringAs decimal r <> "-" <> toStringAs decimal b
