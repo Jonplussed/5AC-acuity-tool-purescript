@@ -7,19 +7,7 @@ import Data.Show.Generic (genericShow)
 
 import AcuityTool.Patient as P
 
-newtype RoomNumber = RoomNumber Int
-
-derive newtype instance eqRoomNumber :: Eq RoomNumber
-derive newtype instance ordRoomNumber :: Ord RoomNumber
-derive newtype instance showRoomNumber :: Show RoomNumber
-
-newtype BedNumber = BedNumber Int
-
-derive newtype instance eqBedNumber :: Eq BedNumber
-derive newtype instance ordBedNumber :: Ord BedNumber
-derive newtype instance showBedNumber :: Show BedNumber
-
-data Bed = Bed RoomNumber BedNumber
+data Bed = Bed Int Int
 
 derive instance genericBed :: Generic Bed _
 

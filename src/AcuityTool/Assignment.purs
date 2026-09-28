@@ -47,5 +47,5 @@ totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
 priority :: Assignment -> Assignment -> Ordering
 priority a1 a2 =
   compare a1.acuity a2.acuity <>
-  compare a1.status a2.status <>
-  compare (Arr.length a1.beds) (Arr.length a2.beds)
+  compare (Arr.length a1.beds) (Arr.length a2.beds) <>
+  compare a1.status a2.status

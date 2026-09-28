@@ -8,8 +8,9 @@ import AcuityTool.Bed as B
 import AcuityTool.Patient as Pa
 import AcuityTool.Placement as Pl
 
+-- TODO: remove legacy helper fn
 bed :: Int -> Int -> B.Bed
-bed r b = B.Bed (B.RoomNumber r) (B.BedNumber b)
+bed = B.Bed
 
 patient :: Pa.Status -> Int -> Pa.Patient
 patient s n = { status: s, acuity: Pa.Acuity n }
