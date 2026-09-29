@@ -5,7 +5,7 @@ import Prelude
 
 import Data.Foldable (foldl)
 import Data.Maybe (isNothing)
-import Data.Ord (lessThanOrEq)
+import Data.Ord (greaterThan)
 
 import AcuityTool.Bed as B
 import AcuityTool.Patient as Pa
@@ -20,6 +20,7 @@ derive newtype instance ordBedCount :: Ord BedCount
 derive newtype instance semiringBedCount :: Semiring BedCount
 derive newtype instance showBedCount :: Show BedCount
 
+-- An assignment + placement "passes" a constraint if the check returns "true".
 type Constraint = A.Assignment -> Pl.Placement -> Boolean
 
 defaults :: Array Constraint
@@ -43,7 +44,7 @@ maxPatientsForMS (BedCount n) a p =
     _       -> true
 
 maxAcuity :: Pa.Acuity -> Constraint
-maxAcuity n a = lessThanOrEq n <<< A.totalAcuity a
+maxAcuity n a =  greaterThan n <<< A.totalAcuity a
 
 distinctRooms :: Constraint
 distinctRooms a p = isNothing $ Arr.findIndex (B.isSameRoom p.bed) a.beds

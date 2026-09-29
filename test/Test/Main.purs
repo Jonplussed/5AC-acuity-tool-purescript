@@ -11,6 +11,7 @@ import Test.AcuityTool.PatientSpec (patientSpec)
 import Test.AcuityTool.BedSpec (bedSpec)
 import Test.AcuityTool.PlacementSpec (placementSpec)
 import Test.AcuityTool.AssignmentSpec (assignmentSpec)
+import Test.AcuityTool.ConstraintSpec (constraintSpec)
 
 main :: Effect Unit
 main = launchAff_ $ runSpec [consoleReporter] do
@@ -18,3 +19,4 @@ main = launchAff_ $ runSpec [consoleReporter] do
   bedSpec
   placementSpec
   assignmentSpec
+  constraintSpec

@@ -44,6 +44,9 @@ maxAccomCode a p = maybe a.accom (max a.accom <<< _.accom) p.patient
 totalAcuity :: Assignment -> Pl.Placement -> Pa.Acuity
 totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
 
+-- Array#sortBy orders from LT to GT. Therefore, an assignment with a higher
+-- "priority" to receive a patient is one that compares as LT versus other
+-- assignments.
 priority :: Assignment -> Assignment -> Ordering
 priority a1 a2 =
   compare a1.acuity a2.acuity <>
