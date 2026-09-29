@@ -6,21 +6,21 @@ import Data.Bounded (class Bounded)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
-data Status = MS | IMC
+data AccomCode = MS | IMC
 
-derive instance eqStatus :: Eq Status
-derive instance genericStatus :: Generic Status _
+derive instance eqAccomCode :: Eq AccomCode
+derive instance genericAccomCode :: Generic AccomCode _
 
-instance ordStatus :: Ord Status where
+instance ordAccomCode :: Ord AccomCode where
   compare IMC  MS   = GT
   compare MS   IMC  = LT
   compare _    _    = EQ
 
-instance boundedStatus :: Bounded Status where
+instance boundedAccomCode :: Bounded AccomCode where
   bottom  = MS
   top     = IMC
 
-instance showStatus :: Show Status where
+instance showAccomCode :: Show AccomCode where
   show = genericShow
 
 newtype Acuity = Acuity Int
@@ -32,7 +32,7 @@ derive newtype instance semiringAcuity :: Semiring Acuity
 derive newtype instance showAcuity :: Show Acuity
 
 type Patient =
-  { status :: Status
+  { accom  :: AccomCode
   , acuity :: Acuity
   }
 

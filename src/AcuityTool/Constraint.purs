@@ -32,13 +32,13 @@ defaults =
 
 maxPatientsForIMC :: BedCount -> Constraint
 maxPatientsForIMC (BedCount n) a p =
-  case A.maxStatus a p of
+  case A.maxAccomCode a p of
     Pa.IMC  -> Arr.length a.beds < n
     _       -> true
 
 maxPatientsForMS :: BedCount -> Constraint
 maxPatientsForMS (BedCount n) a p =
-  case A.maxStatus a p of
+  case A.maxAccomCode a p of
     Pa.MS   -> Arr.length a.beds < n
     _       -> true
 

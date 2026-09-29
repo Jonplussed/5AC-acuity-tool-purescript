@@ -1,0 +1,46 @@
+module Test.AcuityTool.ConstraintSpec (constraintSpec) where
+
+import Prelude
+
+import Data.Array (sortBy)
+import Data.Maybe (Maybe(..))
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
+
+import AcuityTool.Bed as B
+import AcuityTool.Patient as Pa
+import AcuityTool.Placement as Pl
+
+import Test.AcuityTool.SpecHelpers (bed, patient, place)
+
+constraintSpec :: Spec Unit
+constraintSpec = describe "Placement" do
+
+  describe "patientPrio" do
+    it "sorts occupied beds over vacant beds" do
+      let p1 = Nothing
+          p2 = Just $ patient Pa.MS 1
+
+      sortBy Pl.patientPrio [p1,p2,p1] `shouldEqual` [p2,p1,p1]
+
+    it "sorts occupied beds by acuity" do
+      let p1 = Just $ patient Pa.MS   1
+          p2 = Just $ patient Pa.IMC  2
+          p3 = Just $ patient Pa.MS   3
+
+      sortBy Pl.patientPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]
+
+  describe "sortByPrio" do
+
+    it "sorts occupied beds over vacant beds" do
+      let p1 = place (bed 1 1) Nothing
+          p2 = place (bed 1 1) (Just $ patient Pa.MS 1)
+
+      Pl.sortByPrio [p1,p2,p1] `shouldEqual` [p2,p1,p1]
+
+    it "sorts occupied beds by acuity" do
+      let p1 = place (bed 1 1) (Just $ patient Pa.MS   1)
+          p2 = place (bed 1 1) (Just $ patient Pa.IMC  2)
+          p3 = place (bed 1 1) (Just $ patient Pa.MS   3)
+
+      Pl.sortByPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]

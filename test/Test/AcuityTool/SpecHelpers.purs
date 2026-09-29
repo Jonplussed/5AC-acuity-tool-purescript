@@ -12,8 +12,8 @@ import AcuityTool.Placement as Pl
 bed :: Int -> Int -> B.Bed
 bed = B.Bed
 
-patient :: Pa.Status -> Int -> Pa.Patient
-patient s n = { status: s, acuity: Pa.Acuity n }
+patient :: Pa.AccomCode -> Int -> Pa.Patient
+patient s n = { accom: s, acuity: Pa.Acuity n }
 
 place :: B.Bed -> Maybe Pa.Patient -> Pl.Placement
 place b p = { bed: b, patient: p }

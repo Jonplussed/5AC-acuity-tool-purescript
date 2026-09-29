@@ -12,7 +12,7 @@ import Test.AcuityTool.SpecHelpers (patient)
 
 patientSpec :: Spec Unit
 patientSpec = describe "AcuityTool.Patient" do
-  describe "Status" do
+  describe "AccomCode" do
     it "is orderable" do
       max P.IMC P.MS `shouldEqual` P.IMC
       min P.IMC P.MS `shouldEqual` P.MS

@@ -2,7 +2,7 @@ module AcuityTool.Assignment
   ( Assignment
   , empty
   , assign
-  , maxStatus
+  , maxAccomCode
   , totalAcuity
   , priority
   ) where
@@ -20,26 +20,26 @@ import Data.Array as Arr
 
 type Assignment =
   { beds    :: Array B.Bed
-  , status  :: Pa.Status
+  , accom   :: Pa.AccomCode
   , acuity  :: Pa.Acuity
   }
 
 empty :: Assignment
 empty =
   { beds:   []
-  , status: Pa.MS
+  , accom:  Pa.MS
   , acuity: Pa.Acuity 0
   }
 
 assign :: Assignment -> Pl.Placement -> Assignment
 assign a p =
   { beds:   Arr.snoc a.beds p.bed
-  , status: maxStatus a p
+  , accom:  maxAccomCode a p
   , acuity: totalAcuity a p
   }
 
-maxStatus :: Assignment -> Pl.Placement -> Pa.Status
-maxStatus a p = maybe a.status (max a.status <<< _.status) p.patient
+maxAccomCode :: Assignment -> Pl.Placement -> Pa.AccomCode
+maxAccomCode a p = maybe a.accom (max a.accom <<< _.accom) p.patient
 
 totalAcuity :: Assignment -> Pl.Placement -> Pa.Acuity
 totalAcuity a p = maybe a.acuity (add a.acuity <<< _.acuity) p.patient
@@ -48,4 +48,4 @@ priority :: Assignment -> Assignment -> Ordering
 priority a1 a2 =
   compare a1.acuity a2.acuity <>
   compare (Arr.length a1.beds) (Arr.length a2.beds) <>
-  compare a1.status a2.status
+  compare a1.accom a2.accom
