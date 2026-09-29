@@ -3,15 +3,12 @@ module AcuityTool.Roster where
 import Prelude
 
 import Data.Either (Either, note)
-import Data.Foldable (foldl)
 
 import AcuityTool.Bed as B
-import AcuityTool.Patient as Pa
 import AcuityTool.Placement as Pl
 import AcuityTool.Assignment as As
 import AcuityTool.Constraint as C
 import Data.Array as Ar
-
 
 newtype AssignmentCount = AssignmentCount Int
 
@@ -31,10 +28,10 @@ empty (AssignmentCount n) cs =
   }
 
 fill :: Roster -> Array Pl.Placement -> Either String Roster
-fill r ps = foldl (\esr -> bind esr <<< insert) (pure r) (Pl.sortByPrio ps)
+fill r = Ar.foldM insert r <<< Pl.sortByPrio
 
-insert :: Pl.Placement -> Roster -> Either String Roster
-insert p r =
+insert :: Roster -> Pl.Placement -> Either String Roster
+insert r p =
   note ("No valid assignment for " <> B.label p.bed) do
     i <- Ar.findIndex (\a -> Ar.all (\c -> c a p) r.constraints) r.assignments
     a <- flip As.assign p <$> Ar.index r.assignments i
