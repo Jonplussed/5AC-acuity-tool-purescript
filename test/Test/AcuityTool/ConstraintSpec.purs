@@ -71,3 +71,12 @@ constraintSpec = describe "Constraint" do
       C.maxAcuity (Pa.Acuity 10) A.empty
         { acuity = Pa.Acuity 6
         } (H.place bed <<< Just $ H.patient Pa.MS 5) `shouldEqual` false
+
+  describe "#distinctRooms" do
+    it "is true if the placement shares no rooms with assigned beds" do
+      let p1 = H.place (H.bed 1 1) Nothing
+          p2 = H.place (H.bed 2 1) Nothing
+          a1 = A.empty { beds = [H.bed 2 2, H.bed 3 1] }
+
+      C.distinctRooms a1 p1 `shouldEqual` true
+      C.distinctRooms a1 p2 `shouldEqual` false
