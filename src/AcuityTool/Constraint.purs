@@ -49,7 +49,7 @@ maxAcuity n a p = A.totalAcuity a p <= n
 distinctRooms :: Constraint
 distinctRooms a p = isNothing $ Arr.findIndex (B.isSameRoom p.bed) a.beds
 
-exclusiveRooms :: Array B.Bed -> Constraint
-exclusiveRooms xs a p =
+exclusiveBeds :: Array B.Bed -> Constraint
+exclusiveBeds xs a p =
   not <<< (&&) (Arr.elem p.bed xs) $
     foldl (\t b -> t || Arr.elem b xs) false a.beds

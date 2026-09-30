@@ -67,7 +67,6 @@ constraintSpec = describe "Constraint" do
         { acuity = Pa.Acuity 5
         } (H.place bed <<< Just $ H.patient Pa.MS 5) `shouldEqual` true
 
-    it "is false if the assignment + patient acuities are > the limit" do
       C.maxAcuity (Pa.Acuity 10) A.empty
         { acuity = Pa.Acuity 6
         } (H.place bed <<< Just $ H.patient Pa.MS 5) `shouldEqual` false
@@ -80,3 +79,21 @@ constraintSpec = describe "Constraint" do
 
       C.distinctRooms a1 p1 `shouldEqual` true
       C.distinctRooms a1 p2 `shouldEqual` false
+
+  describe "#exclusiveBeds" do
+    let b11 = H.bed 1 1
+        b22 = H.bed 2 2
+        b33 = H.bed 3 3
+
+    describe "given a placement in the list of exclusive beds" do
+      let p = H.place b11 Nothing
+          a = A.empty { beds = [b22] }
+
+      it "is true if the assignment has no beds in the exclusive list" do
+        C.exclusiveBeds [b11,b33] a p `shouldEqual` true
+
+      it "is true if the placement bed is not in the exclusive list" do
+        C.exclusiveBeds [b22,b33] a p `shouldEqual` true
+
+      it "is false the both placement and assignment have beds in the list" do
+        C.exclusiveBeds [b11,b22] a p `shouldEqual` false
