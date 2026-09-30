@@ -62,12 +62,12 @@ constraintSpec = describe "Constraint" do
   describe "#maxAcuity" do
     let bed = H.bed 1 1
 
-    it "is true if the assignment + patient acuities are below the limit" do
+    it "is true if the assignment + patient acuities are <= the limit" do
       C.maxAcuity (Pa.Acuity 10) A.empty
-        { acuity = Pa.Acuity 4
+        { acuity = Pa.Acuity 5
         } (H.place bed <<< Just $ H.patient Pa.MS 5) `shouldEqual` true
 
-    it "is true if the assignment + patient acuities are below the limit" do
+    it "is false if the assignment + patient acuities are > the limit" do
       C.maxAcuity (Pa.Acuity 10) A.empty
         { acuity = Pa.Acuity 6
         } (H.place bed <<< Just $ H.patient Pa.MS 5) `shouldEqual` false

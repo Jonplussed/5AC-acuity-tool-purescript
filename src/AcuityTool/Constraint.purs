@@ -44,7 +44,7 @@ maxPatientsForMS (BedCount n) a p =
     _       -> true
 
 maxAcuity :: Pa.Acuity -> Constraint
-maxAcuity n a =  greaterThan n <<< A.totalAcuity a
+maxAcuity n a p = A.totalAcuity a p <= n
 
 distinctRooms :: Constraint
 distinctRooms a p = isNothing $ Arr.findIndex (B.isSameRoom p.bed) a.beds
