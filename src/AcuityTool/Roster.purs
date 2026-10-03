@@ -27,8 +27,8 @@ empty (AssignmentCount n) cs =
   , constraints: cs
   }
 
-fill :: Roster -> Array Pl.Placement -> Either String Roster
-fill r = Ar.foldM insert r <<< Pl.sortByPrio
+fill :: Roster -> Array Pl.PlaceFormData -> Either String Roster
+fill r = Ar.foldM insert r <<< Pl.sortByPrio <<< normalize
 
 insert :: Roster -> Pl.Placement -> Either String Roster
 insert r p =

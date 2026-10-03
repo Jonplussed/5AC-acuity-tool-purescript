@@ -31,10 +31,14 @@ derive newtype instance boundedAcuity :: Bounded Acuity
 derive newtype instance semiringAcuity :: Semiring Acuity
 derive newtype instance showAcuity :: Show Acuity
 
-type Patient =
-  { accom  :: AccomCode
-  , acuity :: Acuity
-  }
+data Patient = Patient AccomCode Acuity
 
-acuityPrio :: Patient -> Patient -> Ordering
-acuityPrio p1 p2 = compare p2.acuity p1.acuity
+derive instance eqPatient :: Eq Patient
+derive instance genericPatient :: Generic Patient
+
+instance ordPatient :: Ord Patient where
+  compare (Patient accom1 acuity1) (Patient accom2 acuity2) =
+    compare acuity1 acuity2 <> compare accom1 accom2
+
+instance showPatient :: Show Patient where
+  show = genericShow
