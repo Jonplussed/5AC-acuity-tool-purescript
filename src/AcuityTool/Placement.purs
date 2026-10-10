@@ -1,11 +1,13 @@
 module AcuityTool.Placement
-  ( Placement
+  ( VacancyUI (..)
+  , PlacementUI (..)
+  , Vacancy (..)
+  , Placement (..)
   , normalize
   , sortByPrio
   ) where
 
 import Prelude
-
 
 import Data.Array (foldl, snoc, sortBy)
 import Data.Int (round, toNumber)
@@ -15,13 +17,16 @@ import Data.Tuple (Tuple(..), fst)
 import AcuityTool.Bed as B
 import AcuityTool.Patient as P
 
--- TODO:  Account for blocked beds?
-data Vacancy = Vacant | Occupied
+-- NOTE: The user input differs slightly from the assignment data model and we
+-- (possibly) want to present the user with both on submission.
+data VacancyUI = VacantUI | OccupiedUI P.Patient | BlockedUI
 
-type PlaceFormData =
+type PlacementUI =
   { bed     :: B.Bed
-  , patient :: Maybe P.Patient
+  , patient :: VacancyUI
   }
+
+data Vacancy = Vacant | Occupied
 
 type Placement =
   { bed     :: B.Bed
@@ -30,35 +35,40 @@ type Placement =
   }
 
 -- NOTE: Cache the avg calculation in an argument for efficiency.
-normalize :: Array PlaceFormData -> Array Placement
-normalize pfds = foldl (fn $ avgAcuity pfds) [] pfds
+normalize :: Array PlacementUI -> Array Placement
+normalize puis = foldl (fn $ avgAcuity puis) [] puis
   where
-    fn avg pls pfd =
-      snoc pls $ case pfd.patient of
-        Just pat ->
-          { bed:      pfd.bed
-          , vacancy:  Occupied
-          , patient:  pat
-          }
-        Nothing ->
-          { bed:      pfd.bed
+    fn avg pls pui = case pui.patient of
+        -- NOTE: For assignment purposes, an open bed is treated as a patient
+        -- with lowest acuity and average (of submitted) acuities.
+        VacantUI -> snoc pls
+          { bed:      pui.bed
           , vacancy:  Vacant
           , patient:  P.Patient bottom avg
           }
+        OccupiedUI p -> snoc pls
+          { bed:      pui.bed
+          , vacancy:  Occupied
+          , patient:  p
+          }
+        -- NOTE: Blocked beds are eliminated from the assignment generation.
+        BlockedUI -> pls
 
--- TODO: should we consider the occupancy when determining priority?
 sortByPrio :: Array Placement -> Array Placement
 sortByPrio = sortBy $ \p q -> compare q.patient p.patient
 
 -- private
 
-avgAcuity :: Array PlaceFormData -> P.Acuity
-avgAcuity pls = P.Acuity $ a / c
+avgAcuity :: Array PlacementUI -> P.Acuity
+avgAcuity pls = P.Acuity $ a / c -- TODO: What is the rounding method here?
   where
     (Tuple (P.Acuity a) c) =
       foldl totalAcuity (Tuple (P.Acuity 0) 0) pls
 
-totalAcuity :: Tuple P.Acuity Int -> PlaceFormData -> Tuple P.Acuity Int
-totalAcuity t@(Tuple a n) pl =
-  maybe t (\pa -> Tuple (a + pa.acuity) (n + 1)) pl.patient
+totalAcuity :: Tuple P.Acuity Int -> PlacementUI -> Tuple P.Acuity Int
+totalAcuity t@(Tuple a n) pui =
+  case pui.patient of
+    VacantUI -> t
+    OccupiedUI p -> Tuple (a + P.acuity p) (n + 1)
+    BlockedUI -> t
 

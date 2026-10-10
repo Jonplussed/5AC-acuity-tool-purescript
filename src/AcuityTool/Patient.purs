@@ -34,7 +34,7 @@ derive newtype instance showAcuity :: Show Acuity
 data Patient = Patient AccomCode Acuity
 
 derive instance eqPatient :: Eq Patient
-derive instance genericPatient :: Generic Patient
+derive instance genericPatient :: Generic Patient _
 
 instance ordPatient :: Ord Patient where
   compare (Patient accom1 acuity1) (Patient accom2 acuity2) =
@@ -42,3 +42,9 @@ instance ordPatient :: Ord Patient where
 
 instance showPatient :: Show Patient where
   show = genericShow
+
+acuity :: Patient -> Acuity
+acuity (Patient _ a) = a
+
+accomCode :: Patient -> AccomCode
+accomCode (Patient a _) = a
