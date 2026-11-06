@@ -6,8 +6,6 @@ import Data.Generic.Rep (class Generic)
 import Data.Int (decimal, toStringAs)
 import Data.Show.Generic (genericShow)
 
-import AcuityTool.Patient as P
-
 data Bed = Bed Int Int
 
 derive instance genericBed :: Generic Bed _
