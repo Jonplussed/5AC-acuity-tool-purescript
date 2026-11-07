@@ -16,3 +16,6 @@ acuitySpec = describe "AcuityTool.AcuitySpec" do
     it "is the average integer acuity with the decimal rounded" do
       A.average [Acuity 2, Acuity 2, Acuity 3] `shouldEqual` Acuity 2
       A.average [Acuity 2, Acuity 3, Acuity 3] `shouldEqual` Acuity 3
+
+    it "is zero when the array of acuities is empty" do
+      A.average [] `shouldEqual` Acuity 0

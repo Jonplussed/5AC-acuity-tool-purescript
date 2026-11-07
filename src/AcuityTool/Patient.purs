@@ -10,10 +10,10 @@ type Patient =
   , acuity    :: Acuity
   }
 
-patient :: AccomCode -> Int -> Patient
+patient :: AccomCode -> Acuity -> Patient
 patient c a =
   { accomCode: c
-  , acuity: Acuity a
+  , acuity: a
   }
 
 priority :: Patient -> Patient -> Ordering

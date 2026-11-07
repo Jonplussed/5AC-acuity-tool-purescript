@@ -22,3 +22,6 @@ instance boundedAccomCode :: Bounded AccomCode where
 
 instance showAccomCode :: Show AccomCode where
   show = genericShow
+
+default :: AccomCode
+default = MS
