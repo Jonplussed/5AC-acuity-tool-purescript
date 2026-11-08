@@ -1,46 +1,30 @@
-module Test.AcuityTool.PlacementSpec (placementSpec) where
+module Test.AcuityTool.PlacementSpec where
 
 import Prelude
 
-import Data.Array (sortBy)
-import Data.Maybe (Maybe(..))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 
-import AcuityTool.Bed as B
-import AcuityTool.Patient as Pa
-import AcuityTool.Placement as Pl
-
-import Test.AcuityTool.SpecHelpers (bed, patient, place)
+import AcuityTool.AccomCode (AccomCode (..))
+import AcuityTool.Acuity (Acuity (..))
+import AcuityTool.Bed (Bed (..))
+import AcuityTool.Patient (patient)
+import AcuityTool.Placement as P
 
 placementSpec :: Spec Unit
-placementSpec = describe "Placement" do
+placementSpec = describe "AcuityTool.Placement" do
 
-  describe "patientPrio" do
-    it "sorts occupied beds over vacant beds" do
-      let p1 = Nothing
-          p2 = Just $ patient Pa.MS 1
+  describe "prioritize" do
+    it "sorts placements by patient priority" do
+      let p1 = P.full (Bed 1 1) (patient MS  $ Acuity 1)
+          p2 = P.full (Bed 1 2) (patient IMC $ Acuity 1)
+          p3 = P.full (Bed 2 1) (patient MS  $ Acuity 2)
 
-      sortBy Pl.patientPrio [p1,p2,p1] `shouldEqual` [p2,p1,p1]
+      P.prioritize [p1,p2,p3] `shouldEqual` [p3,p2,p1]
 
-    it "sorts occupied beds by acuity" do
-      let p1 = Just $ patient Pa.MS   1
-          p2 = Just $ patient Pa.IMC  2
-          p3 = Just $ patient Pa.MS   3
+    it "sorts open placements as if they were the average of existing patients" do
+      let p1 = P.open (Bed 1 1)
+          p2 = P.full (Bed 1 2) (patient IMC $ Acuity 1)
+          p3 = P.full (Bed 2 1) (patient MS  $ Acuity 3)
 
-      sortBy Pl.patientPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]
-
-  describe "sortByPrio" do
-
-    it "sorts occupied beds over vacant beds" do
-      let p1 = place (bed 1 1) Nothing
-          p2 = place (bed 1 1) (Just $ patient Pa.MS 1)
-
-      Pl.sortByPrio [p1,p2,p1] `shouldEqual` [p2,p1,p1]
-
-    it "sorts occupied beds by acuity" do
-      let p1 = place (bed 1 1) (Just $ patient Pa.MS   1)
-          p2 = place (bed 1 1) (Just $ patient Pa.IMC  2)
-          p3 = place (bed 1 1) (Just $ patient Pa.MS   3)
-
-      Pl.sortByPrio [p2,p1,p3] `shouldEqual` [p3,p2,p1]
+      P.prioritize [p1,p2,p3] `shouldEqual` [p3,p1,p2]
