@@ -14,3 +14,9 @@ accomCodeSpec = describe "AcuityTool.AccomCode" do
   describe "instance Ord AccomCode" do
     it "is sortable" do
       sort [MS, IMC, MS] `shouldEqual` [MS, MS, IMC]
+
+  describe "instance Semigroup AccomCode" do
+    it "appends to the highest AccomCode" do
+      append MS IMC `shouldEqual` IMC
+      append OBS MS `shouldEqual` MS
+

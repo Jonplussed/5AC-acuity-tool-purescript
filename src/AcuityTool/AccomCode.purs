@@ -6,22 +6,19 @@ import Data.Bounded (class Bounded)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
-data AccomCode = MS | IMC
+data AccomCode = OBS | DP | MS | IMC
 
 derive instance eqAccomCode :: Eq AccomCode
 derive instance genericAccomCode :: Generic AccomCode _
-
-instance ordAccomCode :: Ord AccomCode where
-  compare IMC  MS   = GT
-  compare MS   IMC  = LT
-  compare _    _    = EQ
+derive instance ordAccomCode :: Ord AccomCode
 
 instance boundedAccomCode :: Bounded AccomCode where
-  bottom  = MS
+  bottom  = OBS
   top     = IMC
+
+instance semigroupAccomCode :: Semigroup AccomCode where
+  append = max
 
 instance showAccomCode :: Show AccomCode where
   show = genericShow
 
-default :: AccomCode
-default = MS
